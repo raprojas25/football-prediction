@@ -73,6 +73,8 @@ export interface Prediction {
 }
 
 export interface TeamStatsData {
+  id: number
+  name: string
   goals: {
     home: Record<string, number>
     away: Record<string, number>

@@ -9,14 +9,15 @@ export default {
     extend: {
       colors: {
         betano: {
-          primary: '#1DB954',
-          secondary: '#FF6B00',
-          green: '#1DB954',
-          orange: '#FF6B00',
-          dark: '#0D0D0D',
-          surface: '#1A1A1A',
-          card: '#252525',
-          border: '#333333',
+          primary: '#FF3C00',
+          secondary: '#FF0279',
+          green: '#0ECF5E',
+          orange: '#EF4A0F',
+          dark: '#222536',
+          surface: '#1A202E',
+          card: '#2A3046',
+          border: '#3A4863',
+          light: '#3A4863',
           muted: '#B3B3B3',
           text: '#FFFFFF',
           'text-secondary': '#B3B3B3',
@@ -26,7 +27,7 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
-        'gradient-betano': 'linear-gradient(135deg, #1DB954 0%, #FF6B00 100%)',
+        'gradient-betano': 'linear-gradient(135deg, #FF3C00 0%, #FF6B00 100%)',
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',

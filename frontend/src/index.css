@@ -31,7 +31,7 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-betano-primary hover:bg-betano-primary/90 text-white font-medium px-4 py-2 rounded-lg transition-colors;
+    @apply bg-betano-primary/90 hover:bg-betano-primary/90 text-white font-medium px-4 py-2 rounded-lg transition-colors;
   }
 
   .btn-secondary {
@@ -43,11 +43,11 @@
   }
 
   .input {
-    @apply bg-betano-surface border border-betano-border rounded-lg px-4 py-2 text-betano-text placeholder-betano-muted focus:outline-none focus:border-betano-primary transition-colors;
+    @apply bg-betano-border border border-betano-light rounded-lg px-4 py-2 text-betano-text placeholder-betano-muted focus:outline-none focus:border-betano-green transition-colors;
   }
 
   .select {
-    @apply bg-betano-surface border border-betano-border rounded-lg px-4 py-2 text-betano-text focus:outline-none focus:border-betano-primary transition-colors cursor-pointer;
+    @apply bg-betano-dark border border-betano-border rounded-lg px-4 py-2 text-betano-text focus:outline-none focus:border-betano-primary transition-colors cursor-pointer;
   }
 }
 

@@ -22,20 +22,20 @@ Plataforma full-stack para generar pronósticos deportivos basados en estadísti
 │                         FRONTEND (React + Vite)                    │
 │  TypeScript • Tailwind CSS • Framer Motion • Modo Oscuro           │
 └─────────────────────────────┬───────────────────────────────────────┘
-                              │ REST API
+                               │ REST API (:3000)
 ┌─────────────────────────────▼───────────────────────────────────────┐
-│                         BACKEND (API + Motor)                      │
-│  FastAPI (Python) • Motor de Predicciones • Scheduler               │
+│                         BACKEND (Express.js)                       │
+│  TypeScript • Prisma ORM • Motor de Predicciones                   │
 └─────────────────────────────┬───────────────────────────────────────┘
-                              │
+                               │
 ┌─────────────────────────────▼───────────────────────────────────────┐
 │                         DATA LAYER                                 │
-│  PostgreSQL • SQLAlchemy • Alembic                                  │
+│  PostgreSQL • Prisma Client                                        │
 └─────────────────────────────┬───────────────────────────────────────┘
-                              │
+                               │
 ┌─────────────────────────────▼───────────────────────────────────────┐
 │                    DATA ACQUISITION (Scraper)                      │
-│  BeautifulSoup • Requests • Automation (cron/Linux)                 │
+│  Python • BeautifulSoup • Requests • (fuera del backend)          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -62,22 +62,29 @@ Plataforma full-stack para generar pronósticos deportivos basados en estadísti
 
 | Tecnología | Propósito | Versión |
 |------------|-----------|---------|
-| FastAPI | Framework web async | 0.109.x |
-| SQLAlchemy | ORM | 2.x |
-| Alembic | Migraciones DB | 1.x |
-| Pydantic | Validación datos | 2.x |
-| Uvicorn | Servidor ASGI | 0.27.x |
-| BeautifulSoup4 | Scraping HTML | 4.x |
-| Requests | HTTP client | 2.x |
-| APScheduler | Scheduling tareas | 3.x |
-| NumPy/Pandas | Análisis numérico | latest |
-| Scikit-learn | ML predicciones | 1.x |
+| Express.js | Framework web | 4.18.x |
+| TypeScript | Tipado estático | 5.x |
+| Prisma | ORM | 5.x |
+| Node.js | Runtime | 20.x |
+| BeautifulSoup4 | Scraping (Python) | 4.x |
+| Requests | HTTP client (Python) | 2.x |
+| Zod | Validación | 3.x |
+
+### Scraper (Python)
+
+| Tecnología | Propósito |
+|------------|-----------|
+| Python | Lenguaje scraping |
+| BeautifulSoup4 | Parseo HTML |
+| Requests | HTTP client |
+| pandas | Transformación datos |
 
 ### Base de Datos
 
 | Tecnología | Propósito |
 |------------|-----------|
 | PostgreSQL | Base de datos relacional |
+| Prisma | ORM (Node.js) |
 | pgvector (extensión) | Embeddings para ML (futuro) |
 | Docker | Contenedor DB |
 
@@ -116,19 +123,24 @@ sport-predictions/
 │   ├── tsconfig.json
 │   └── package.json
 │
-├── backend/                  # FastAPI
-│   ├── app/
-│   │   ├── api/             # Endpoints API
-│   │   ├── core/            # Configuración
-│   │   ├── db/              # Modelos SQLAlchemy
-│   │   ├── models/          # Entidades DB
-│   │   ├── schemas/        # Schemas Pydantic
-│   │   ├── services/       # Lógica de negocio
-│   │   └── scraper/        # Módulos scraping
-│   ├── scripts/            # Scripts utilidad
-│   ├── alembic/             # Migraciones
-│   ├── requirements.txt
-│   └── main.py
+├── backend/                  # Express.js + TypeScript
+│   ├── prisma/
+│   │   └── schema.prisma      # Modelos DB (Prisma)
+│   ├── src/
+│   │   ├── index.ts           # Entry point
+│   │   ├── seed.ts            # Script para cargar datos
+│   │   ├── routes/            # Endpoints API
+│   │   │   ├── leagues.ts
+│   │   │   ├── teams.ts
+│   │   │   ├── stats.ts
+│   │   │   └── predictions.ts
+│   │   └── services/          # Lógica de negocio
+│   │       └── predictionEngine.ts
+│   ├── scraper/               # Python scraper (separado)
+│   │   ├── scraper_multi_ligas.py
+│   │   └── soccerstats.py
+│   ├── package.json
+│   └── tsconfig.json
 │
 ├── docs/                    # Documentación
 │   └── arquitectura.md
@@ -628,25 +640,23 @@ Usuario (Arquitecto)
 # Contexto del Backend
 
 ## Tech Stack
-- FastAPI 0.109
-- PostgreSQL + SQLAlchemy 2
-- Pydantic 2
-- Alembic (migraciones)
-- APScheduler (tareas programadas)
+- Express.js 4.18
+- TypeScript 5.x
+- Prisma 5.x (ORM)
+- Node.js 20.x
+- PostgreSQL
 
 ## Estructura
-- app/api/routes/ (endpoints)
-- app/models/ (entidades SQLAlchemy)
-- app/schemas/ (schemas Pydantic)
-- app/services/ (lógica de negocio)
-- app/scraper/ (módulos scraping)
+- src/index.ts (entry point)
+- src/routes/ (endpoints API)
+- src/services/ (lógica de negocio)
+- prisma/schema.prisma (modelos DB)
 
 ## Convenciones
-- Nombres de endpoints en snake_case
-- Respuestas en JSON con mensajes claros
-- Manejo de errores con HTTPException
-- Dependencias inyectadas con Depends()
-- Logs con logging estándar
+- Nombres de endpoints en camelCase
+- Respuestas en JSON
+- Manejo de errores con try/catch
+- Middleware: cors, helmet, morgan
 ```
 
 #### Para Agente Scraper
@@ -693,6 +703,11 @@ Usuario (Arquitecto)
 - Reintentos automáticos (3 intentos)
 - Logging de errores
 - Guardar progreso en caso de fallo
+
+## Integración con Backend
+- El scraper es **standalone** (carpeta `scraper/`)
+- Guarda datos en JSON (para frontend) o directamente en PostgreSQL
+- El backend Express.js lee de la misma DB
 ```
 
 ---
@@ -763,17 +778,18 @@ VITE_APP_NAME=Sports Predictions
 git clone https://github.com/tu-usuario/sport-predictions.git
 cd sport-predictions
 
-# Backend
+# Backend (Express.js + TypeScript)
 cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python main.py
+npm install
+npx prisma generate
+npx prisma db push
+npm run seed    # Carga datos desde JSONs
+npm run dev     # Server en http://localhost:3000
 
 # Frontend (nueva terminal)
 cd frontend
 npm install
-npm run dev
+npm run dev     # http://localhost:5173
 ```
 
 ### Docker Compose (Completo)
