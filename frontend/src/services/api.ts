@@ -91,8 +91,13 @@ export const teamsService = {
 }
 
 export const predictionsService = {
-  generate: (homeTeamId: number, awayTeamId: number) =>
-    api.post<Prediction>('/predictions/generate', { homeTeamId, awayTeamId }).then(r => r.data),
+  generate: (homeTeamId: number, awayTeamId: number, matchId?: number) =>
+    api.post<Prediction & { saved: boolean; predictionId: number | null }>('/predictions/generate', { 
+      homeTeamId, 
+      awayTeamId,
+      matchId 
+    }).then(r => r.data),
   getByMatch: (matchId: number) => api.get(`/predictions/match/${matchId}`).then(r => r.data),
   getByLeague: (leagueId: number) => api.get(`/predictions/league/${leagueId}`).then(r => r.data),
+  getAll: () => api.get('/predictions').then(r => r.data),
 }

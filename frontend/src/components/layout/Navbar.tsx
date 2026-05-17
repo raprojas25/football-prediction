@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Trophy, Settings, Info } from 'lucide-react'
+import { Trophy, Settings, Info, Calendar } from 'lucide-react'
 
 export default function Navbar() {
   return (
@@ -13,7 +13,14 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Link 
+              to="/partidos" 
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition-colors text-sm"
+            >
+              <Calendar className="w-4 h-4" />
+              Partidos
+            </Link>
             <button className="p-2 hover:bg-white/50 rounded-lg transition-colors">
               <Info className="w-5 h-5 text-betano-text" />
             </button>

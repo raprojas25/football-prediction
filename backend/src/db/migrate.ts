@@ -78,12 +78,17 @@ async function migrate() {
       CREATE TABLE IF NOT EXISTS predictions (
         id SERIAL PRIMARY KEY,
         match_id INTEGER REFERENCES matches(id) ON DELETE CASCADE,
+        home_team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
+        away_team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
         predicted_winner VARCHAR(10),
+        predicted_goals_home FLOAT,
+        predicted_goals_away FLOAT,
         over_1_5_probability FLOAT,
         over_2_5_probability FLOAT,
         over_3_5_probability FLOAT,
         btts_probability FLOAT,
         corners_over_9_5_probability FLOAT,
+        total_corners_predicted FLOAT,
         confidence_level VARCHAR(20),
         created_at TIMESTAMP DEFAULT NOW()
       );

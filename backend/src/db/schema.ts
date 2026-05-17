@@ -67,12 +67,17 @@ export const matches = pgTable('matches', {
 export const predictions = pgTable('predictions', {
   id: serial('id').primaryKey(),
   matchId: integer('match_id').references(() => matches.id).notNull(),
+  homeTeamId: integer('home_team_id').references(() => teams.id).notNull(),
+  awayTeamId: integer('away_team_id').references(() => teams.id).notNull(),
   predictedWinner: varchar('predicted_winner', { length: 10 }),
+  predictedGoalsHome: real('predicted_goals_home'),
+  predictedGoalsAway: real('predicted_goals_away'),
   over1_5Probability: real('over_1_5_probability'),
   over2_5Probability: real('over_2_5_probability'),
   over3_5Probability: real('over_3_5_probability'),
   bttsProbability: real('btts_probability'),
   cornersOver9_5Probability: real('corners_over_9_5_probability'),
+  totalCornersPredicted: real('total_corners_predicted'),
   confidenceLevel: varchar('confidence_level', { length: 20 }),
   createdAt: timestamp('created_at').defaultNow(),
 });

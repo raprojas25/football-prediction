@@ -7,15 +7,19 @@ import { Info } from '@/components/ui/Info'
 // import Dashboard from '@/components/ui/Dashboard'
 // import GlowBackgroundButton from '@/components/ui/Background'
 import { leaguesService, teamsService, predictionsService, type League, type Team } from '@/services/api'
+import { BetanoCard } from '@/components/ui/BetanoCard'
+import Matches from '@/components/ui/Matches'
+import { Header } from '@/components/layout/Header'
 
 const USE_API = import.meta.env.VITE_USE_API === 'true'
 
 const leagues = [
   { id: 'alemania', name: 'Bundesliga', country: 'Alemania', flag: '🇩🇪', apiId: 1 },
   { id: 'inglaterra', name: 'Premier League', country: 'Inglaterra', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', apiId: 2 },
-  { id: 'espana', name: 'La Liga', country: 'España', flag: '🇪🇸', apiId: 3 },
+  { id: 'spain', name: 'La Liga', country: 'España', flag: '🇪🇸', apiId: 3 },
   { id: 'italia', name: 'Serie A', country: 'Italia', flag: '🇮🇹', apiId: 4 },
   { id: 'francia', name: 'Ligue 1', country: 'Francia', flag: '🇫🇷', apiId: 5 },
+  { id: 'peru', name: 'Liga 1', country: 'Peru', flag: 'PE', apiId: 6 },
 ]
 
 type TabType = 'goals' | 'corners' | 'stats'
@@ -131,6 +135,7 @@ export default function HomePage() {
         gf_25: calc(home.scored_conceded.home.gf_over_25 || 0, away.scored_conceded.away.ga_over_25 || 0),
         ga_05: calc(home.scored_conceded.home.ga_over_05 || 0, away.scored_conceded.away.gf_over_05 || 0),
         ga_15: calc(home.scored_conceded.home.ga_over_15 || 0, away.scored_conceded.away.gf_over_15 || 0),
+        ga_25: calc(home.scored_conceded.home.ga_over_25 || 0, away.scored_conceded.away.gf_over_25 || 0),
         
         first_home: calc(home.goals.home.team_scored_first, away.goals.away.opponent_scored_first),
         first_away: calc(home.goals.home.opponent_scored_first, away.goals.away.team_scored_first),
@@ -138,8 +143,12 @@ export default function HomePage() {
         scoring_home: calc(home.rates.home.scoring_rate || 0, away.rates.away.conceding_rate || 0),
         scoring_away: calc(home.rates.home.conceding_rate || 0, away.rates.away.scoring_rate || 0),
         ht_home: calc(home.rates.home.scoring_rate_1st_h || 0, away.rates.away.conceding_rate_1st_half || 0),
-        ht_away: calc(home.rates.home.scoring_rate_2nd_h || 0, away.rates.away.conceding_rate_2nd_half || 0),
-        
+        ht_away: calc(home.rates.home.conceding_rate_1st_half || 0, away.rates.away.scoring_rate_1st_h || 0),
+        st_home: calc(home.rates.home.scoring_rate_2nd_h || 0, away.rates.away.conceding_rate_2nd_half || 0),
+        st_away: calc(home.rates.home.conceding_rate_2nd_half || 0, away.rates.away.scoring_rate_2nd_h || 0),
+        bt_home: calc(home.rates.home.scored_in_both_halves || 0, away.rates.away.conceded_in_both_halves || 0),
+        bt_away: calc(home.rates.home.conceded_in_both_halves || 0, away.rates.away.scored_in_both_halves || 0),
+
         corners_local: calc(home.corners_for.home.avg, away.corners_against.away.avg),
         corners_away: calc(home.corners_against.home.avg, away.corners_for.away.avg),
         total_corners: calc(home.Total_corners.home.avg, away.Total_corners.away.avg),
@@ -170,6 +179,7 @@ export default function HomePage() {
 
   return (
     <div className="space-y-6">
+      <Header />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -274,7 +284,9 @@ export default function HomePage() {
           {/*   <TopLeagues/> */}
           {/* </AnimatePresence> */}
       <AnimatePresence mode='wait'>
-            <Info prediction={prediction}/>
+            {/* <Info prediction={prediction}/> */}
+        <Matches prediction={prediction}/>
+        {/* <BetanoCard  prediction={prediction}/> */}
           </AnimatePresence>
       {/* <Dashboard/> */}
       {/* <GlowBackgroundButton/> */}
